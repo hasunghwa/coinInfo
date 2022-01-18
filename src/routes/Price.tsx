@@ -60,6 +60,14 @@ const Loader = styled.span`
   display: block;
 `;
 
+interface IPercent {
+  data?: number;
+}
+
+const Percent = styled.span<IPercent>`
+  ${(props) => (props.data && props.data < 0 ? 'color: red' : 'color: green')};
+`;
+
 function Price({coinId}: PriceProps) {
   const {isLoading, data} = useQuery<PriceData>(
     ["tickers", coinId], 
@@ -68,10 +76,10 @@ function Price({coinId}: PriceProps) {
       refetchInterval: 5000,
     }
   );
+  
   return (
-    <div>
+    <>
       { isLoading ? <Loader>Loading...</Loader> : (
-        <>
         <Overview>
           <OverviwItem>
             <span>Current Prices :</span>
@@ -79,11 +87,11 @@ function Price({coinId}: PriceProps) {
           </OverviwItem>
           <OverviwItem>
             <span>Percent Change 24 Hourss :</span>
-            <span>{data?.quotes.USD.percent_change_24h.toFixed(2)}%</span>
+            <Percent data={data?.quotes.USD.percent_change_24h}>{data?.quotes.USD.percent_change_24h}%</Percent> 
           </OverviwItem>
           <OverviwItem>
             <span>Percent Change 7 days :</span>
-            <span>{data?.quotes.USD.percent_change_7d.toFixed(2)}%</span>
+            <Percent data={data?.quotes.USD.percent_change_7d}>{data?.quotes.USD.percent_change_7d}%</Percent>
           </OverviwItem>
           <OverviwItem>
             <span>Maximum Price :</span>
@@ -94,9 +102,8 @@ function Price({coinId}: PriceProps) {
             <span>{data?.quotes.USD.ath_date.slice(0,10)}</span>
           </OverviwItem>
         </Overview>
-        </>
       )}
-  </div>
+  </>
   );
 }
 export default Price;
